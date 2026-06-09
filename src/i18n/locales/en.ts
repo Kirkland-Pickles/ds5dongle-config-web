@@ -36,7 +36,7 @@ export const en = {
     cacheRefresh: "A new version is available. Updating the page cache.",
   },
   footer: {
-    title: "Pico2W DualSense 5 Bridge",
+    title: "Pico2W DS5 Bridge + HTPC Features",
     description: "Web setup driver for turning a Raspberry Pi Pico2W into a wireless adapter for the DualSense (DS5) controller.",
   },
   device: {
@@ -66,6 +66,8 @@ export const en = {
       bleWakeDescription: "Wake PC from sleep when a BLE controller powers on.",
       psShortcut: "Gamebar",
       psShortcutDescription: "Tap PS = Game Bar, hold PS = Task View. Note: PS button still visible to host. Disable steam overlay on ps press if it pops up",
+      pinEntry: "Windows PIN Entry",
+      pinEntryDescription: "Hold D-pad left + Circle + L1 + R1 to auto-type your 4-digit PIN. PIN is stored unencrypted in flash. Do not use for sensitive accounts",
     },
     hapticsGain: "Haptics gain",
     speakerVolume: "Speaker volume",
@@ -84,6 +86,8 @@ export const en = {
     bleWakeEnabled: "BLE wake enabled",
     bleWakeMac: "BLE wake device MAC",
     psShortcutEnabled: "PS shortcuts enabled",
+    pinEnabled: "PIN entry enabled",
+    pinDigits: "PIN digits",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",

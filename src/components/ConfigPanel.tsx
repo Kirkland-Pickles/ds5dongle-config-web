@@ -10,6 +10,7 @@ import { PollingRateControl } from "./config/PollingRateControl";
 import { ToggleControl } from "./config/ToggleControl";
 import { VolumeByteControl } from "./config/VolumeByteControl"
 import { MacAddressControl } from "./config/MacAddressControl";
+import { PinDigitsControl } from "./config/PinDigitsControl";
 
 interface ConfigPanelProps {
   bridge: UseDs5BridgeResult;
@@ -134,9 +135,7 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
                 />
               </div>
             </section>
-          </div>
 
-          <div className="config-section-column">
             <section className="config-section">
               <div className="config-section-heading">
                 <span className="config-section-icon">
@@ -178,8 +177,7 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
               </div>
             </section>
           </div>
-        </div>
-       <div className="config-section-grid">
+
           <div className="config-section-column">
             <section className="config-section">
               <div className="config-section-heading">
@@ -199,8 +197,32 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
                 />
               </div>
             </section>
-          </div>
-          <div className="config-section-column">
+
+            <section className="config-section">
+              <div className="config-section-heading">
+                <span className="config-section-icon">
+                  <Gamepad2 size={17} />
+                </span>
+                <div>
+                  <h3>{t("config.sections.pinEntry")}</h3>
+                  <p>{t("config.sections.pinEntryDescription")}</p>
+                </div>
+              </div>
+              <div className="control-stack compact-stack">
+                <ToggleControl
+                  label={t("config.pinEnabled")}
+                  value={bridge.draft.pinEnabled}
+                  onChange={(value) => bridge.setDraftField("pinEnabled", value)}
+                />
+                <PinDigitsControl
+                  label={t("config.pinDigits")}
+                  value={bridge.draft.pinDigits}
+                  disabled={!bridge.draft.pinEnabled}
+                  onChange={(value) => bridge.setDraftField("pinDigits", value)}
+                />
+              </div>
+            </section>
+
             <section className="config-section">
               <div className="config-section-heading">
                 <span className="config-section-icon">
