@@ -1,4 +1,4 @@
-import { Gauge, Gamepad2, SlidersHorizontal, Volume2, Zap } from "lucide-react";
+import { Bluetooth, Gauge, Gamepad2, SlidersHorizontal, Volume2, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseDs5BridgeResult } from "../hooks/useDs5Bridge";
@@ -8,7 +8,8 @@ import { FloatControl } from "./config/FloatControl";
 import { IntegerControl } from "./config/IntegerControl";
 import { PollingRateControl } from "./config/PollingRateControl";
 import { ToggleControl } from "./config/ToggleControl";
-import { VolumeByteControl } from "./config/VolumeByteControl";
+import { VolumeByteControl } from "./config/VolumeByteControl"
+import { MacAddressControl } from "./config/MacAddressControl";
 
 interface ConfigPanelProps {
   bridge: UseDs5BridgeResult;
@@ -178,6 +179,31 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
             </section>
           </div>
         </div>
+<section className="config-section">
+          <div className="config-section-heading">
+            <span className="config-section-icon">
+              <Bluetooth size={17} />
+            </span>
+            <div>
+              <h3>{t("config.sections.bleWake")}</h3>
+              <p>{t("config.sections.bleWakeDescription")}</p>
+            </div>
+          </div>
+          <div className="control-stack compact-stack">
+            <ToggleControl
+              label={t("config.bleWakeEnabled")}
+              value={bridge.draft.bleWakeEnabled}
+              onChange={(value) => bridge.setDraftField("bleWakeEnabled", value)}
+            />
+            <MacAddressControl
+              label={t("config.bleWakeMac")}
+              value={bridge.draft.bleWakeMac}
+              disabled={!bridge.draft.bleWakeEnabled}
+              issue={fieldIssue(bridge.issues, "bleWakeMac")}
+              onChange={(value) => bridge.setDraftField("bleWakeMac", value)}
+            />
+          </div>
+        </section>
       </CardContent>
     </Card>
   );

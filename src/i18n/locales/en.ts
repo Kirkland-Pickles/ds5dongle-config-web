@@ -62,6 +62,8 @@ export const en = {
       performanceDescription: "Choose the HID report polling cadence.",
       compatibility: "Compatibility",
       compatibilityDescription: "Switch the controller identification mode.",
+      bleWake: "BLE Wake",
+      bleWakeDescription: "Wake PC from sleep when a BLE controller powers on.",
     },
     hapticsGain: "Haptics gain",
     speakerVolume: "Speaker volume",
@@ -77,6 +79,8 @@ export const en = {
     audioBufferLength: "Audio buffer length",
     controllerMode: "Controller mode",
     disableUsbSn: "Disable USB serial number",
+    bleWakeEnabled: "BLE wake enabled",
+    bleWakeMac: "BLE wake device MAC",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",
@@ -117,6 +121,7 @@ export const en = {
     pollingRateMode: "Polling rate mode must be 0, 1, or 2",
     audioBufferLength: "Audio buffer length must be between 16 and 128",
     controllerMode: "Controller mode must be DS5, DSE, or Auto",
+    bleWakeMac: "MAC address must be in format AA:BB:CC:DD:EE:FF",
   },
   errors: {
     invalidConfig: "Device returned invalid config: {{issues}}",

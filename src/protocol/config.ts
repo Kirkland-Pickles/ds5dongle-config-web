@@ -1,5 +1,5 @@
-export const CONFIG_BODY_VERSION = 2;
-export const CONFIG_BODY_SIZE = 17;
+export const CONFIG_BODY_VERSION = 3;
+export const CONFIG_BODY_SIZE = 24;
 export const FEATURE_REPORT_PAYLOAD_SIZE = 63;
 
 export type PollingRateMode = 0 | 1 | 2;
@@ -19,6 +19,8 @@ export interface ConfigBody {
   controllerMode: ControllerMode;
   lockVolume: boolean;
   disableUsbSn: boolean;
+  bleWakeEnabled: boolean;
+  bleWakeMac: string; // "AA:BB:CC:DD:EE:FF"
 }
 
 export interface ConfigValidationIssue {
@@ -39,6 +41,8 @@ export const DEFAULT_CONFIG: ConfigBody = {
   controllerMode: 2,
   lockVolume: false,
   disableUsbSn: false,
+  bleWakeEnabled: false,
+  bleWakeMac: "00:00:00:00:00:00",
 };
 
 export const POLLING_RATE_OPTIONS: Array<{
@@ -114,6 +118,9 @@ export function encodeConfigBody(config: ConfigBody): Uint8Array<ArrayBuffer> {
   view.setUint8(14, config.controllerMode);
   view.setUint8(15, config.lockVolume ? 1 : 0);
   view.setUint8(16, config.disableUsbSn ? 1 : 0);
+  view.setUint8(17, config.bleWakeEnabled ? 1 : 0);
+  const macBytes = parseMac(config.bleWakeMac);
+  for (let i = 0; i < 6; i++) view.setUint8(18 + i, macBytes[i]);
   return bytes;
 }
 
@@ -156,9 +163,12 @@ export function validateConfig(config: ConfigBody): ConfigValidationIssue[] {
     issues.push({ field: "controllerMode" });
   }
 
+  if (!isValidMac(config.bleWakeMac)) {
+    issues.push({ field: "bleWakeMac" });
+  }
+
   return issues;
 }
-
 export function normalizeConfig(config: ConfigBody): ConfigBody {
   const speakerVolume = clampInteger(config.speakerVolume, 0, 127);
 
@@ -176,6 +186,8 @@ export function normalizeConfig(config: ConfigBody): ConfigBody {
     controllerMode: clampInteger(config.controllerMode, 0, 2) as ControllerMode,
     lockVolume: Boolean(config.lockVolume),
     disableUsbSn: Boolean(config.disableUsbSn),
+    bleWakeEnabled: Boolean(config.bleWakeEnabled),
+    bleWakeMac: isValidMac(config.bleWakeMac) ? config.bleWakeMac.toUpperCase() : "00:00:00:00:00:00",
   };
 }
 
@@ -198,6 +210,8 @@ export function configsEqual(left: ConfigBody | null, right: ConfigBody | null):
     left.controllerMode === right.controllerMode &&
     left.lockVolume === right.lockVolume &&
     left.disableUsbSn === right.disableUsbSn
+    && left.bleWakeEnabled === right.bleWakeEnabled
+    && left.bleWakeMac === right.bleWakeMac
   );
 }
 
@@ -245,6 +259,8 @@ function decodeAt(bytes: Uint8Array, offset: number): DecodedConfigCandidate | n
       controllerMode: view.getUint8(14) as ControllerMode,
       lockVolume: view.getUint8(15) === 1,
       disableUsbSn: view.getUint8(16) === 1,
+      bleWakeEnabled: view.getUint8(17) === 1,
+      bleWakeMac: formatMac(bytes, 18),
     },
   };
 }
@@ -271,4 +287,18 @@ function roundToStep(value: number, step: number): number {
 
 function clampInteger(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, Math.round(value)));
+}
+
+function formatMac(bytes: Uint8Array, offset: number): string {
+  return Array.from({ length: 6 }, (_, i) =>
+    bytes[offset + i].toString(16).padStart(2, "0").toUpperCase()
+  ).join(":");
+}
+
+function parseMac(mac: string): number[] {
+  return mac.split(":").map((b) => parseInt(b, 16) & 0xff);
+}
+
+export function isValidMac(mac: string): boolean {
+  return /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(mac);
 }

@@ -62,6 +62,8 @@ export const zh = {
       performanceDescription: "选择 HID 上报的轮询节奏。",
       compatibility: "兼容性",
       compatibilityDescription: "切换控制器识别模式。",
+      bleWake: "BLE 唤醒",
+      bleWakeDescription: "当 BLE 控制器开机时从睡眠中唤醒 PC。",
     },
     hapticsGain: "触觉增益",
     speakerVolume: "扬声器音量",
@@ -77,6 +79,8 @@ export const zh = {
     audioBufferLength: "音频缓冲长度",
     controllerMode: "控制器模式",
     disableUsbSn: "禁用 USB 序列号",
+    bleWakeEnabled: "启用 BLE 唤醒",
+    bleWakeMac: "BLE 唤醒设备 MAC",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",
@@ -117,6 +121,7 @@ export const zh = {
     pollingRateMode: "轮询率模式必须是 0、1 或 2",
     audioBufferLength: "音频缓冲长度必须在 16 到 128 之间",
     controllerMode: "控制器模式必须是 DS5、DSE 或自动",
+    bleWakeMac: "MAC 地址格式必须为 AA:BB:CC:DD:EE:FF",
   },
   errors: {
     invalidConfig: "设备返回了无效配置：{{issues}}",
