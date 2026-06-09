@@ -179,31 +179,56 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
             </section>
           </div>
         </div>
-<section className="config-section">
-          <div className="config-section-heading">
-            <span className="config-section-icon">
-              <Bluetooth size={17} />
-            </span>
-            <div>
-              <h3>{t("config.sections.bleWake")}</h3>
-              <p>{t("config.sections.bleWakeDescription")}</p>
-            </div>
+       <div className="config-section-grid">
+          <div className="config-section-column">
+            <section className="config-section">
+              <div className="config-section-heading">
+                <span className="config-section-icon">
+                  <Gamepad2 size={17} />
+                </span>
+                <div>
+                  <h3>{t("config.sections.psShortcut")}</h3>
+                  <p>{t("config.sections.psShortcutDescription")}</p>
+                </div>
+              </div>
+              <div className="control-stack compact-stack">
+                <ToggleControl
+                  label={t("config.psShortcutEnabled")}
+                  value={bridge.draft.psShortcutEnabled}
+                  onChange={(value) => bridge.setDraftField("psShortcutEnabled", value)}
+                />
+              </div>
+            </section>
           </div>
-          <div className="control-stack compact-stack">
-            <ToggleControl
-              label={t("config.bleWakeEnabled")}
-              value={bridge.draft.bleWakeEnabled}
-              onChange={(value) => bridge.setDraftField("bleWakeEnabled", value)}
-            />
-            <MacAddressControl
-              label={t("config.bleWakeMac")}
-              value={bridge.draft.bleWakeMac}
-              disabled={!bridge.draft.bleWakeEnabled}
-              issue={fieldIssue(bridge.issues, "bleWakeMac")}
-              onChange={(value) => bridge.setDraftField("bleWakeMac", value)}
-            />
+          <div className="config-section-column">
+            <section className="config-section">
+              <div className="config-section-heading">
+                <span className="config-section-icon">
+                  <Bluetooth size={17} />
+                </span>
+                <div>
+                  <h3>{t("config.sections.bleWake")}</h3>
+                  <p>{t("config.sections.bleWakeDescription")}</p>
+                </div>
+              </div>
+              <div className="control-stack compact-stack">
+                <ToggleControl
+                  label={t("config.bleWakeEnabled")}
+                  value={bridge.draft.bleWakeEnabled}
+                  onChange={(value) => bridge.setDraftField("bleWakeEnabled", value)}
+                />
+                <MacAddressControl
+                  label={t("config.bleWakeMac")}
+                  value={bridge.draft.bleWakeMac}
+                  disabled={!bridge.draft.bleWakeEnabled}
+                  issue={fieldIssue(bridge.issues, "bleWakeMac")}
+                  onChange={(value) => bridge.setDraftField("bleWakeMac", value)}
+                />
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
+
       </CardContent>
     </Card>
   );

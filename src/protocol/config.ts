@@ -1,5 +1,5 @@
-export const CONFIG_BODY_VERSION = 3;
-export const CONFIG_BODY_SIZE = 24;
+export const CONFIG_BODY_VERSION = 4;
+export const CONFIG_BODY_SIZE = 25;
 export const FEATURE_REPORT_PAYLOAD_SIZE = 63;
 
 export type PollingRateMode = 0 | 1 | 2;
@@ -21,6 +21,7 @@ export interface ConfigBody {
   disableUsbSn: boolean;
   bleWakeEnabled: boolean;
   bleWakeMac: string; // "AA:BB:CC:DD:EE:FF"
+  psShortcutEnabled: boolean;
 }
 
 export interface ConfigValidationIssue {
@@ -43,6 +44,7 @@ export const DEFAULT_CONFIG: ConfigBody = {
   disableUsbSn: false,
   bleWakeEnabled: false,
   bleWakeMac: "00:00:00:00:00:00",
+  psShortcutEnabled: false,
 };
 
 export const POLLING_RATE_OPTIONS: Array<{
@@ -121,6 +123,7 @@ export function encodeConfigBody(config: ConfigBody): Uint8Array<ArrayBuffer> {
   view.setUint8(17, config.bleWakeEnabled ? 1 : 0);
   const macBytes = parseMac(config.bleWakeMac);
   for (let i = 0; i < 6; i++) view.setUint8(18 + i, macBytes[i]);
+  view.setUint8(24, config.psShortcutEnabled ? 1 : 0);
   return bytes;
 }
 
@@ -169,6 +172,7 @@ export function validateConfig(config: ConfigBody): ConfigValidationIssue[] {
 
   return issues;
 }
+
 export function normalizeConfig(config: ConfigBody): ConfigBody {
   const speakerVolume = clampInteger(config.speakerVolume, 0, 127);
 
@@ -188,6 +192,7 @@ export function normalizeConfig(config: ConfigBody): ConfigBody {
     disableUsbSn: Boolean(config.disableUsbSn),
     bleWakeEnabled: Boolean(config.bleWakeEnabled),
     bleWakeMac: isValidMac(config.bleWakeMac) ? config.bleWakeMac.toUpperCase() : "00:00:00:00:00:00",
+    psShortcutEnabled: Boolean(config.psShortcutEnabled),
   };
 }
 
@@ -209,9 +214,10 @@ export function configsEqual(left: ConfigBody | null, right: ConfigBody | null):
     left.audioBufferLength === right.audioBufferLength &&
     left.controllerMode === right.controllerMode &&
     left.lockVolume === right.lockVolume &&
-    left.disableUsbSn === right.disableUsbSn
-    && left.bleWakeEnabled === right.bleWakeEnabled
-    && left.bleWakeMac === right.bleWakeMac
+    left.disableUsbSn === right.disableUsbSn &&
+    left.bleWakeEnabled === right.bleWakeEnabled &&
+    left.bleWakeMac === right.bleWakeMac &&
+    left.psShortcutEnabled === right.psShortcutEnabled
   );
 }
 
@@ -260,7 +266,8 @@ function decodeAt(bytes: Uint8Array, offset: number): DecodedConfigCandidate | n
       lockVolume: view.getUint8(15) === 1,
       disableUsbSn: view.getUint8(16) === 1,
       bleWakeEnabled: view.getUint8(17) === 1,
-      bleWakeMac: formatMac(bytes, 18),
+      bleWakeMac: formatMac(bytes, offset + 18),
+      psShortcutEnabled: view.getUint8(24) === 1,
     },
   };
 }

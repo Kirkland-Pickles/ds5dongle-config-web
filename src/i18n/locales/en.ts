@@ -64,6 +64,8 @@ export const en = {
       compatibilityDescription: "Switch the controller identification mode.",
       bleWake: "BLE Wake",
       bleWakeDescription: "Wake PC from sleep when a BLE controller powers on.",
+      psShortcut: "Gamebar",
+      psShortcutDescription: "Tap PS = Game Bar, hold PS = Task View. Note: PS button still visible to host. Disable steam overlay on ps press if it pops up",
     },
     hapticsGain: "Haptics gain",
     speakerVolume: "Speaker volume",
@@ -81,6 +83,7 @@ export const en = {
     disableUsbSn: "Disable USB serial number",
     bleWakeEnabled: "BLE wake enabled",
     bleWakeMac: "BLE wake device MAC",
+    psShortcutEnabled: "PS shortcuts enabled",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",
