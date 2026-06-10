@@ -1,5 +1,5 @@
 export const CONFIG_BODY_VERSION = 4;
-export const CONFIG_BODY_SIZE = 30;
+export const CONFIG_BODY_SIZE = 31;
 export const FEATURE_REPORT_PAYLOAD_SIZE = 63;
 
 export type PollingRateMode = 0 | 1 | 2;
@@ -24,6 +24,7 @@ export interface ConfigBody {
   psShortcutEnabled: boolean;
   pinEnabled: boolean;
   pinDigits: [number, number, number, number];
+  pinAzerty: boolean;
 }
 
 export interface ConfigValidationIssue {
@@ -49,6 +50,7 @@ export const DEFAULT_CONFIG: ConfigBody = {
   psShortcutEnabled: false,
   pinEnabled: false,
   pinDigits: [0, 0, 0, 0],
+  pinAzerty: false,
 };
 
 export const POLLING_RATE_OPTIONS: Array<{
@@ -130,6 +132,7 @@ export function encodeConfigBody(config: ConfigBody): Uint8Array<ArrayBuffer> {
   view.setUint8(24, config.psShortcutEnabled ? 1 : 0);
   view.setUint8(25, config.pinEnabled ? 1 : 0);
   for (let i = 0; i < 4; i++) view.setUint8(26 + i, config.pinDigits[i] & 0xff);
+  view.setUint8(30, config.pinAzerty ? 1 : 0);
   return bytes;
 }
 
@@ -206,6 +209,7 @@ export function normalizeConfig(config: ConfigBody): ConfigBody {
       Math.min(9, Math.max(0, Math.round(config.pinDigits[2]))),
       Math.min(9, Math.max(0, Math.round(config.pinDigits[3]))),
     ],
+    pinAzerty: Boolean(config.pinAzerty),
   };
 }
 
@@ -235,7 +239,8 @@ export function configsEqual(left: ConfigBody | null, right: ConfigBody | null):
     left.pinDigits[0] === right.pinDigits[0] &&
     left.pinDigits[1] === right.pinDigits[1] &&
     left.pinDigits[2] === right.pinDigits[2] &&
-    left.pinDigits[3] === right.pinDigits[3]
+    left.pinDigits[3] === right.pinDigits[3] &&
+    left.pinAzerty === right.pinAzerty
   );
 }
 
@@ -293,6 +298,7 @@ function decodeAt(bytes: Uint8Array, offset: number): DecodedConfigCandidate | n
         view.getUint8(28),
         view.getUint8(29),
       ],
+      pinAzerty: view.getUint8(30) === 1,
     },
   };
 }

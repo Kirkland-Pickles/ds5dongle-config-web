@@ -81,6 +81,7 @@ export const zh = {
     disableUsbSn: "禁用 USB 序列号",
     bleWakeEnabled: "启用 BLE 唤醒",
     bleWakeMac: "BLE 唤醒设备 MAC",
+    pinAzerty: "AZERTY 布局",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",

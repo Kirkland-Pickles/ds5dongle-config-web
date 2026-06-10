@@ -87,6 +87,7 @@ export const fr = {
     disablePicoLed: "Désactiver la LED du Pico",
     pollingRateMode: "Mode de fréquence d’interrogation",
     audioBufferLength: "Taille du buffer audio",
+    pinAzerty: "Disposition AZERTY",
     controllerMode: "Mode de la manette",
     controllerModeOptions: {
       ds5: "DS5",

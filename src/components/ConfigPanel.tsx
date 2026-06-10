@@ -220,6 +220,16 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
                   disabled={!bridge.draft.pinEnabled}
                   onChange={(value) => bridge.setDraftField("pinDigits", value)}
                 />
+                <div style={{ paddingLeft: "2px", marginTop: "4px" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "4px", cursor: "pointer", fontSize: "0.75rem", opacity: 0.6 }}>
+                    <input
+                      type="checkbox"
+                      checked={bridge.draft.pinAzerty}
+                      onChange={(e) => bridge.setDraftField("pinAzerty", e.target.checked)}
+                    />
+                    {t("config.pinAzerty")}
+                  </label>
+                </div>
               </div>
             </section>
 

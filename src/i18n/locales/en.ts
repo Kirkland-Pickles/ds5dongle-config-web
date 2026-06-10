@@ -88,6 +88,7 @@ export const en = {
     psShortcutEnabled: "PS shortcuts enabled",
     pinEnabled: "PIN entry enabled",
     pinDigits: "PIN digits",
+    pinAzerty: "AZERTY layout",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",
