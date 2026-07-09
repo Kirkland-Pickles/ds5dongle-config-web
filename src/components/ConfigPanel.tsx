@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseDs5BridgeResult } from "../hooks/useDs5Bridge";
 import { fieldIssue } from "../protocol/config";
+import { AudioDeviceSelectControl } from "./config/AudioDeviceSelectControl";
 import { ControllerModeControl } from "./config/ControllerModeControl";
 import { FloatControl } from "./config/FloatControl";
 import { IntegerControl } from "./config/IntegerControl";
@@ -162,19 +163,19 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
                 disabled={controlsDisabled}
                 onChange={(value) => bridge.setDraftField("disablePicoLed", value)}
               />
-              <ToggleControl
-                label={t("config.disableMic")}
-                value={bridge.draft.disableMic}
-                helpContent={t("config.help.disableMic")}
+              <AudioDeviceSelectControl
+                label={t("config.micSelect")}
+                value={bridge.draft.micSelect}
+                helpContent={t("config.help.micSelect")}
                 disabled={controlsDisabled}
-                onChange={(value) => bridge.setDraftField("disableMic", value)}
+                onChange={(value) => bridge.setDraftField("micSelect", value)}
               />
-              <ToggleControl
-                label={t("config.disableSpeaker")}
-                value={bridge.draft.disableSpeaker}
-                helpContent={t("config.help.disableSpeaker")}
+              <AudioDeviceSelectControl
+                label={t("config.speakerSelect")}
+                value={bridge.draft.speakerSelect}
+                helpContent={t("config.help.speakerSelect")}
                 disabled={controlsDisabled}
-                onChange={(value) => bridge.setDraftField("disableSpeaker", value)}
+                onChange={(value) => bridge.setDraftField("speakerSelect", value)}
               />
               <ToggleControl
                 label={t("config.enableWake")}

@@ -4,6 +4,7 @@ export const FEATURE_REPORT_PAYLOAD_SIZE = 63;
 
 export type PollingRateMode = 0 | 1 | 2;
 export type ControllerMode = 0 | 1 | 2;
+export type AudioDeviceSelect = 0 | 1 | 2 | 3;
 
 export interface ConfigBody {
   hapticsGain: number;
@@ -17,8 +18,8 @@ export interface ConfigBody {
   controllerMode: ControllerMode;
   enableUsbSn: boolean;
   psShortcutEnabled: boolean;
-  disableMic: boolean;
-  disableSpeaker: boolean;
+  micSelect: AudioDeviceSelect;
+  speakerSelect: AudioDeviceSelect;
   enableWake: boolean;
   triggerReduce: number;
   lockVolume: boolean;
@@ -40,8 +41,8 @@ export const DEFAULT_CONFIG: ConfigBody = {
   controllerMode: 2,
   enableUsbSn: false,
   psShortcutEnabled: false,
-  disableMic: false,
-  disableSpeaker: false,
+  micSelect: 0,
+  speakerSelect: 0,
   enableWake: false,
   triggerReduce: 0,
   lockVolume: false,
@@ -62,6 +63,15 @@ export const CONTROLLER_MODE_OPTIONS: Array<{
   { value: 0 },
   { value: 1 },
   { value: 2 },
+];
+
+export const AUDIO_DEVICE_SELECT_OPTIONS: Array<{
+  value: AudioDeviceSelect;
+}> = [
+  { value: 0 },
+  { value: 1 },
+  { value: 2 },
+  { value: 3 },
 ];
 
 export function decodeConfigBody(source: ArrayBuffer | DataView | Uint8Array): ConfigBody {
@@ -118,8 +128,8 @@ export function encodeConfigBody(config: ConfigBody): Uint8Array<ArrayBuffer> {
   view.setUint8(12, config.controllerMode);
   view.setUint8(13, config.enableUsbSn ? 1 : 0);
   view.setUint8(14, config.psShortcutEnabled ? 1 : 0);
-  view.setUint8(15, config.disableMic ? 1 : 0);
-  view.setUint8(16, config.disableSpeaker ? 1 : 0);
+  view.setUint8(15, config.micSelect);
+  view.setUint8(16, config.speakerSelect);
   view.setUint8(17, config.enableWake ? 1 : 0);
   view.setUint8(18, config.triggerReduce);
   view.setUint8(19, config.lockVolume ? 1 : 0);
@@ -165,6 +175,14 @@ export function validateConfig(config: ConfigBody): ConfigValidationIssue[] {
     issues.push({ field: "controllerMode" });
   }
 
+  if (!Number.isInteger(config.micSelect) || config.micSelect < 0 || config.micSelect > 3) {
+    issues.push({ field: "micSelect" });
+  }
+
+  if (!Number.isInteger(config.speakerSelect) || config.speakerSelect < 0 || config.speakerSelect > 3) {
+    issues.push({ field: "speakerSelect" });
+  }
+
   if (!Number.isInteger(config.triggerReduce) || config.triggerReduce < 0 || config.triggerReduce > 10) {
     issues.push({ field: "triggerReduce" });
   }
@@ -185,8 +203,8 @@ export function normalizeConfig(config: ConfigBody): ConfigBody {
     controllerMode: clampInteger(config.controllerMode, 0, 2) as ControllerMode,
     enableUsbSn: Boolean(config.enableUsbSn),
     psShortcutEnabled: Boolean(config.psShortcutEnabled),
-    disableMic: Boolean(config.disableMic),
-    disableSpeaker: Boolean(config.disableSpeaker),
+    micSelect: clampInteger(config.micSelect, 0, 3) as AudioDeviceSelect,
+    speakerSelect: clampInteger(config.speakerSelect, 0, 3) as AudioDeviceSelect,
     enableWake: Boolean(config.enableWake),
     triggerReduce: clampInteger(config.triggerReduce, 0, 10),
     lockVolume: Boolean(config.lockVolume),
@@ -210,8 +228,8 @@ export function configsEqual(left: ConfigBody | null, right: ConfigBody | null):
     left.controllerMode === right.controllerMode &&
     left.enableUsbSn === right.enableUsbSn &&
     left.psShortcutEnabled === right.psShortcutEnabled &&
-    left.disableMic === right.disableMic &&
-    left.disableSpeaker === right.disableSpeaker &&
+    left.micSelect === right.micSelect &&
+    left.speakerSelect === right.speakerSelect &&
     left.enableWake === right.enableWake &&
     left.triggerReduce === right.triggerReduce &&
     left.lockVolume === right.lockVolume
@@ -260,8 +278,8 @@ function decodeAt(bytes: Uint8Array, offset: number): DecodedConfigCandidate | n
       controllerMode: view.getUint8(12) as ControllerMode,
       enableUsbSn: view.getUint8(13) === 1,
       psShortcutEnabled: view.getUint8(14) === 1,
-      disableMic: view.getUint8(15) === 1,
-      disableSpeaker: view.getUint8(16) === 1,
+      micSelect: view.getUint8(15) as AudioDeviceSelect,
+      speakerSelect: view.getUint8(16) as AudioDeviceSelect,
       enableWake: view.getUint8(17) === 1,
       triggerReduce: view.getUint8(18),
       lockVolume: view.getUint8(19) === 1,

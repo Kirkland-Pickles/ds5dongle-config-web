@@ -703,6 +703,57 @@ h2 {
   align-items: center;
 }
 
+.compact-stack .audio-device-select-row {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.audio-device-select-wrapper {
+  position: relative;
+  width: 132px;
+  justify-self: end;
+}
+
+.audio-device-select {
+  width: 132px;
+  height: 32px;
+  padding: 0 30px 0 12px;
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.audio-device-select option {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+.audio-device-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 34%, transparent);
+}
+
+.audio-device-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.audio-device-select-chevron {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  color: var(--muted-foreground);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
 .state-box {
   margin-top: clamp(10px, 1.6vh, 14px);
   padding: clamp(10px, 1.6vh, 14px);
@@ -762,6 +813,11 @@ h2 {
 
   .toggle-row {
     min-height: 36px;
+  }
+
+  .compact-stack .audio-device-select-row {
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   .action-stack {
