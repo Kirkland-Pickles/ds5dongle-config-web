@@ -762,16 +762,6 @@ h2 {
   border-radius: 8px;
 }
 
-@media (min-width: 861px) {
-  .config-panel {
-    max-height: calc(100svh - clamp(10px, 1.8vh, 18px) * 2 - 152px);
-  }
-
-  .side-panel {
-    max-height: calc(100svh - clamp(10px, 1.8vh, 18px) * 2 - 152px);
-  }
-}
-
 @media (max-height: 780px) and (min-width: 861px) {
   .eyebrow,
   .label {
