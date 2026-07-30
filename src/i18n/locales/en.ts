@@ -98,6 +98,9 @@ export const en = {
     controllerMode: "Controller mode",
     enableUsbSn: "Enable USB serial number",
     psShortcutEnabled: "PS button = Xbox Guide",
+    pinEnabled: "PIN entry enabled",
+    pinAzerty: "AZERTY layout",
+    pinDigits: "PIN digits",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",
@@ -132,6 +135,7 @@ export const en = {
       micSelect: "0: Auto\n1: Built-in\n2: Headphone\n3: Disabled",
       speakerSelect: "0: Auto\n1: Built-in\n2: Headphone\n3: Disabled",
       enableWake: "Enable USB wake.\nNote: after enabling, USB will stay continuously connected.",
+      pinEnabled: "Enable PIN entry. Works independently of wake.",
       pollingRateMode: "Real-time mode may cause gyro jitter. 500 Hz is recommended.",
       controllerMode: "TODO: Fill in the controller mode description here.",
       enableUsbSn: "TODO: Fill in the USB serial number description here.",

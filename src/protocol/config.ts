@@ -1,10 +1,12 @@
 export const CONFIG_BODY_VERSION = 5;
-export const CONFIG_BODY_SIZE = 20;
+export const CONFIG_BODY_SIZE = 28;
 export const FEATURE_REPORT_PAYLOAD_SIZE = 63;
 
 export type PollingRateMode = 0 | 1 | 2;
 export type ControllerMode = 0 | 1 | 2;
 export type AudioDeviceSelect = 0 | 1 | 2 | 3;
+export type StatusGpioMode = 0 | 1;
+export type PinAzerty = 0 | 1;
 
 export interface ConfigBody {
   hapticsGain: number;
@@ -23,6 +25,11 @@ export interface ConfigBody {
   enableWake: boolean;
   triggerReduce: number;
   lockVolume: boolean;
+  statusGpioPin: number;
+  statusGpioMode: StatusGpioMode;
+  pinEnabled: boolean;
+  pinDigits: [number, number, number, number];
+  pinAzerty: PinAzerty;
 }
 
 export interface ConfigValidationIssue {
@@ -46,6 +53,11 @@ export const DEFAULT_CONFIG: ConfigBody = {
   enableWake: false,
   triggerReduce: 0,
   lockVolume: false,
+  statusGpioPin: 0xff,
+  statusGpioMode: 0,
+  pinEnabled: false,
+  pinDigits: [0, 0, 0, 0],
+  pinAzerty: 0,
 };
 
 export const POLLING_RATE_OPTIONS: Array<{
@@ -133,6 +145,13 @@ export function encodeConfigBody(config: ConfigBody): Uint8Array<ArrayBuffer> {
   view.setUint8(17, config.enableWake ? 1 : 0);
   view.setUint8(18, config.triggerReduce);
   view.setUint8(19, config.lockVolume ? 1 : 0);
+  view.setUint8(20, config.statusGpioPin);
+  view.setUint8(21, config.statusGpioMode);
+  view.setUint8(22, config.pinEnabled ? 1 : 0);
+  for (let i = 0; i < 4; i++) {
+    view.setUint8(23 + i, config.pinDigits[i] & 0xff);
+  }
+  view.setUint8(27, config.pinAzerty);
   return bytes;
 }
 
@@ -187,6 +206,29 @@ export function validateConfig(config: ConfigBody): ConfigValidationIssue[] {
     issues.push({ field: "triggerReduce" });
   }
 
+  if (!Number.isInteger(config.statusGpioPin) || config.statusGpioPin < 0 || config.statusGpioPin > 255) {
+    issues.push({ field: "statusGpioPin" });
+  }
+
+  if (!Number.isInteger(config.statusGpioMode) || config.statusGpioMode < 0 || config.statusGpioMode > 1) {
+    issues.push({ field: "statusGpioMode" });
+  }
+
+  if (!Array.isArray(config.pinDigits) || config.pinDigits.length !== 4) {
+    issues.push({ field: "pinDigits" });
+  } else {
+    for (const digit of config.pinDigits) {
+      if (!Number.isInteger(digit) || digit < 0 || digit > 9) {
+        issues.push({ field: "pinDigits" });
+        break;
+      }
+    }
+  }
+
+  if (!Number.isInteger(config.pinAzerty) || config.pinAzerty < 0 || config.pinAzerty > 1) {
+    issues.push({ field: "pinAzerty" });
+  }
+
   return issues;
 }
 
@@ -208,6 +250,16 @@ export function normalizeConfig(config: ConfigBody): ConfigBody {
     enableWake: Boolean(config.enableWake),
     triggerReduce: clampInteger(config.triggerReduce, 0, 10),
     lockVolume: Boolean(config.lockVolume),
+    statusGpioPin: clampInteger(config.statusGpioPin, 0, 255),
+    statusGpioMode: clampInteger(config.statusGpioMode, 0, 1) as StatusGpioMode,
+    pinEnabled: Boolean(config.pinEnabled),
+    pinDigits: [
+      clampInteger(config.pinDigits[0], 0, 9),
+      clampInteger(config.pinDigits[1], 0, 9),
+      clampInteger(config.pinDigits[2], 0, 9),
+      clampInteger(config.pinDigits[3], 0, 9),
+    ],
+    pinAzerty: clampInteger(config.pinAzerty, 0, 1) as PinAzerty,
   };
 }
 
@@ -232,7 +284,15 @@ export function configsEqual(left: ConfigBody | null, right: ConfigBody | null):
     left.speakerSelect === right.speakerSelect &&
     left.enableWake === right.enableWake &&
     left.triggerReduce === right.triggerReduce &&
-    left.lockVolume === right.lockVolume
+    left.lockVolume === right.lockVolume &&
+    left.statusGpioPin === right.statusGpioPin &&
+    left.statusGpioMode === right.statusGpioMode &&
+    left.pinEnabled === right.pinEnabled &&
+    left.pinDigits[0] === right.pinDigits[0] &&
+    left.pinDigits[1] === right.pinDigits[1] &&
+    left.pinDigits[2] === right.pinDigits[2] &&
+    left.pinDigits[3] === right.pinDigits[3] &&
+    left.pinAzerty === right.pinAzerty
   );
 }
 
@@ -283,6 +343,16 @@ function decodeAt(bytes: Uint8Array, offset: number): DecodedConfigCandidate | n
       enableWake: view.getUint8(17) === 1,
       triggerReduce: view.getUint8(18),
       lockVolume: view.getUint8(19) === 1,
+      statusGpioPin: view.getUint8(20),
+      statusGpioMode: view.getUint8(21) as StatusGpioMode,
+      pinEnabled: view.getUint8(22) === 1,
+      pinDigits: [
+        view.getUint8(23),
+        view.getUint8(24),
+        view.getUint8(25),
+        view.getUint8(26),
+      ],
+      pinAzerty: view.getUint8(27) as PinAzerty,
     },
   };
 }

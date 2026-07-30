@@ -97,6 +97,9 @@ export const zh = {
     controllerMode: "控制器模式",
     enableUsbSn: "启用 USB 序列号",
     psShortcutEnabled: "PS 键 = Xbox 指南",
+    pinEnabled: "启用 PIN 输入",
+    pinAzerty: "AZERTY 布局",
+    pinDigits: "PIN 数字",
     controllerModeOptions: {
       ds5: "DS5",
       dse: "DSE",
@@ -128,6 +131,8 @@ export const zh = {
       micSelect: "0: 自动\n1: 内置\n2: 耳机\n3: 禁用",
       speakerSelect: "0: 自动\n1: 内置\n2: 耳机\n3: 禁用",
       enableWake: "开启 USB 唤醒。\n注意：开启后 USB 会一直保持常连状态",
+      pinEnabled: "启用 PIN 输入。无需依赖唤醒功能。",
+      pinAzerty: "使用 AZERTY 键盘布局输入",
       pollingRateMode: "开启实时模式可能会有陀螺仪抽搐的问题。推荐 500Hz",
       controllerMode: "TODO: 在这里填写控制器模式说明。",
       enableUsbSn: "TODO: 在这里填写 USB 序列号说明。",

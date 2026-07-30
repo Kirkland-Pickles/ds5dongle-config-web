@@ -7,6 +7,7 @@ import { AudioDeviceSelectControl } from "./config/AudioDeviceSelectControl";
 import { ControllerModeControl } from "./config/ControllerModeControl";
 import { FloatControl } from "./config/FloatControl";
 import { IntegerControl } from "./config/IntegerControl";
+import { PinDigitsControl } from "./config/PinDigitsControl";
 import { PollingRateControl } from "./config/PollingRateControl";
 import { ToggleControl } from "./config/ToggleControl";
 
@@ -217,6 +218,22 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
                 helpContent={t("config.help.psShortcutEnabled")}
                 disabled={controlsDisabled}
                 onChange={(value) => bridge.setDraftField("psShortcutEnabled", value)}
+              />
+              <ToggleControl
+                label={t("config.pinEnabled")}
+                value={bridge.draft.pinEnabled}
+                helpContent={t("config.help.pinEnabled")}
+                disabled={controlsDisabled}
+                onChange={(value) => bridge.setDraftField("pinEnabled", value)}
+              />
+              <PinDigitsControl
+                label={t("config.pinDigits")}
+                azertyLabel={t("config.pinAzerty")}
+                azertyEnabled={bridge.draft.pinAzerty === 1}
+                value={bridge.draft.pinDigits}
+                disabled={controlsDisabled || !bridge.draft.pinEnabled}
+                onAzertyChange={(value) => bridge.setDraftField("pinAzerty", value ? 1 : 0)}
+                onChange={(value) => bridge.setDraftField("pinDigits", value)}
               />
             </div>
           </section>
