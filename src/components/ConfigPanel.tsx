@@ -7,6 +7,7 @@ import { AudioDeviceSelectControl } from "./config/AudioDeviceSelectControl";
 import { ControllerModeControl } from "./config/ControllerModeControl";
 import { FloatControl } from "./config/FloatControl";
 import { IntegerControl } from "./config/IntegerControl";
+import { MacAddressControl } from "./config/MacAddressControl";
 import { PinDigitsControl } from "./config/PinDigitsControl";
 import { PollingRateControl } from "./config/PollingRateControl";
 import { ToggleControl } from "./config/ToggleControl";
@@ -184,6 +185,20 @@ export function ConfigPanel({ bridge }: ConfigPanelProps) {
                 helpContent={t("config.help.enableWake")}
                 disabled={controlsDisabled}
                 onChange={(value) => bridge.setDraftField("enableWake", value)}
+              />
+              <ToggleControl
+                label={t("config.bleWakeEnabled")}
+                value={bridge.draft.bleWakeEnabled}
+                helpContent={t("config.help.bleWakeEnabled")}
+                disabled={controlsDisabled}
+                onChange={(value) => bridge.setDraftField("bleWakeEnabled", value)}
+              />
+              <MacAddressControl
+                label={t("config.bleWakeMac")}
+                value={bridge.draft.bleWakeMac}
+                issue={fieldIssue(bridge.issues, "bleWakeMac")}
+                disabled={controlsDisabled || !bridge.draft.bleWakeEnabled}
+                onChange={(value) => bridge.setDraftField("bleWakeMac", value)}
               />
             </div>
           </section>

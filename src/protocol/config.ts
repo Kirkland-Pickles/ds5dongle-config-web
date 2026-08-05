@@ -1,5 +1,5 @@
 export const CONFIG_BODY_VERSION = 5;
-export const CONFIG_BODY_SIZE = 28;
+export const CONFIG_BODY_SIZE = 35;
 export const FEATURE_REPORT_PAYLOAD_SIZE = 63;
 
 export type PollingRateMode = 0 | 1 | 2;
@@ -30,6 +30,8 @@ export interface ConfigBody {
   pinEnabled: boolean;
   pinDigits: [number, number, number, number];
   pinAzerty: PinAzerty;
+  bleWakeEnabled: boolean;
+  bleWakeMac: string;
 }
 
 export interface ConfigValidationIssue {
@@ -58,6 +60,8 @@ export const DEFAULT_CONFIG: ConfigBody = {
   pinEnabled: false,
   pinDigits: [0, 0, 0, 0],
   pinAzerty: 0,
+  bleWakeEnabled: false,
+  bleWakeMac: "00:00:00:00:00:00",
 };
 
 export const POLLING_RATE_OPTIONS: Array<{
@@ -152,6 +156,11 @@ export function encodeConfigBody(config: ConfigBody): Uint8Array<ArrayBuffer> {
     view.setUint8(23 + i, config.pinDigits[i] & 0xff);
   }
   view.setUint8(27, config.pinAzerty);
+  view.setUint8(28, config.bleWakeEnabled ? 1 : 0);
+  const bleWakeMac = parseMac(config.bleWakeMac);
+  for (let i = 0; i < 6; i++) {
+    view.setUint8(29 + i, bleWakeMac[i]);
+  }
   return bytes;
 }
 
@@ -229,6 +238,10 @@ export function validateConfig(config: ConfigBody): ConfigValidationIssue[] {
     issues.push({ field: "pinAzerty" });
   }
 
+  if (!isValidMac(config.bleWakeMac)) {
+    issues.push({ field: "bleWakeMac" });
+  }
+
   return issues;
 }
 
@@ -260,6 +273,8 @@ export function normalizeConfig(config: ConfigBody): ConfigBody {
       clampInteger(config.pinDigits[3], 0, 9),
     ],
     pinAzerty: clampInteger(config.pinAzerty, 0, 1) as PinAzerty,
+    bleWakeEnabled: Boolean(config.bleWakeEnabled),
+    bleWakeMac: isValidMac(config.bleWakeMac) ? config.bleWakeMac.toUpperCase() : "00:00:00:00:00:00",
   };
 }
 
@@ -292,7 +307,9 @@ export function configsEqual(left: ConfigBody | null, right: ConfigBody | null):
     left.pinDigits[1] === right.pinDigits[1] &&
     left.pinDigits[2] === right.pinDigits[2] &&
     left.pinDigits[3] === right.pinDigits[3] &&
-    left.pinAzerty === right.pinAzerty
+    left.pinAzerty === right.pinAzerty &&
+    left.bleWakeEnabled === right.bleWakeEnabled &&
+    left.bleWakeMac === right.bleWakeMac
   );
 }
 
@@ -353,6 +370,8 @@ function decodeAt(bytes: Uint8Array, offset: number): DecodedConfigCandidate | n
         view.getUint8(26),
       ],
       pinAzerty: view.getUint8(27) as PinAzerty,
+      bleWakeEnabled: view.getUint8(28) === 1,
+      bleWakeMac: formatMac(bytes, offset + 29),
     },
   };
 }
@@ -371,6 +390,20 @@ function toUint8Array(source: ArrayBuffer | DataView | Uint8Array): Uint8Array {
   }
 
   return new Uint8Array(source);
+}
+
+function formatMac(bytes: Uint8Array, offset: number): string {
+  return Array.from({ length: 6 }, (_, i) =>
+    bytes[offset + i].toString(16).padStart(2, "0").toUpperCase(),
+  ).join(":");
+}
+
+function parseMac(mac: string): number[] {
+  return mac.split(":").map((byte) => parseInt(byte, 16) & 0xff);
+}
+
+export function isValidMac(mac: string): boolean {
+  return /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/.test(mac);
 }
 
 function roundToStep(value: number, step: number): number {
